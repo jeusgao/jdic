@@ -32,7 +32,7 @@ jDic = JmmDic(name=None, path=None)
   Args:
     name ([str]): [name of dic] (default: `None`)
     path ([str]): [path of dic map file] (default: `None`)
-    Raises:
+  Raises:
     FileNotFoundError: [keys or values mmapfile not exists, cannot build a JDic]
 '''
 ```
