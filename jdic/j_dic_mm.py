@@ -35,7 +35,7 @@ class JmmDic(object):
             with open(f'{self.fp}_do_not_del_me.dat', 'r') as f:
                 self.shape = tuple([int(l) for l in f.read().splitlines()])
             self.keys = np.load(f'{self.fp}_keys.dat', allow_pickle=True).tolist()
-            self.values = np.memmap(f'{self.fp}_values.dat', dtype=np.int, mode='r+', shape=self.shape)
+            self.values = np.memmap(f'{self.fp}_values.dat', dtype='int', mode='r+', shape=self.shape)
 
     def buildDic(self, keys, values, name, path=None):
         '''[summary]
@@ -86,7 +86,7 @@ class JmmDic(object):
         _keys_in = _keys[np.where(_idxs_all!=None)]
         _oov = _keys[np.where(_idxs_all==None)]
 
-        _new_idx = []
+        _new_idx = {}
 
         if is_get_vals:
             _lambda = lambda x: ''.join([chr(_x) for _x in list(filter(lambda x: x not in [-1, 0, 10, 32], x))])
