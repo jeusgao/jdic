@@ -26,7 +26,7 @@ pip3 install your_wheels_path/jdic-0.0.1-py3-none-any.whl
 # Import
 
 ```python
-from jdic.j_dic_mm import JmmDic
+from jdic import JmmDic
 jDic = JmmDic(name=None, path=None)
 '''
   Args:
