@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Author  : Joe Gao (jeusgao@163.com)
 
-import os, numpy as np, time, json
+import os, numpy as np, json
 import mmap
 from tqdm import tqdm
 
@@ -50,7 +50,9 @@ class JmmDic(object):
         '''
         maxlen = max([len(v) for v in values])
         maxlen = int(maxlen *1.5)
-        if not keys: return False
+        if not keys: raise ValueError('empty keys')
+        if len(keys) != len(set(keys)): raise ValueError('Please make all keys unique first.')
+
         self.fp = os.path.join(path, name) if path else name
         keys = {k:i for i, k in tqdm(enumerate(keys))}
 
@@ -76,7 +78,7 @@ class JmmDic(object):
         Returns:
             dict: [keys_oov, keys_in, all keys' value]
         '''
-        if not keys: return None
+        if not keys: raise ValueError('empty keys')
         if not isinstance(keys, list): keys = [keys]
         _keys = np.array(keys)
 
@@ -106,16 +108,21 @@ class JmmDic(object):
         Returns:
             bool: [action result]
         '''
-        if any([not self.fp, not keys, not values]): return False
+        if not self.fp: raise ValueError('If you want to add kvs, please set the [path and] name on instantiate a jdic object.')
+        if not keys: raise ValueError('Empty keys.')
+        if not values: raise ValueError('Empty values.')
 
         _len_k, _len_v = len(keys), len(values)
-        if _len_k != _len_v: return False
+        if _len_k != _len_v: raise ValueError(f'Same length of keys and values expected, got {_len_k} keys and {_len_v} values.')
+        if _len_k != len(set(keys)): raise ValueError('Please make all keys unique first.')
 
         if not isinstance(keys, list): keys = [keys]
         if not isinstance(values, list): values = [values]
 
-        _start, _maxlen = self.shape
 
+        keys, values = zip(*{k:v for k, v in zip(keys, values) if k not in self.keys}.items())
+
+        _start, _maxlen = self.shape
         _tmp = {k:i+_start for i, k in tqdm(enumerate(keys))}
         self.keys = {**self.keys, **_tmp}
         np.save(f'{self.fp}_keys', self.keys)
@@ -133,9 +140,4 @@ class JmmDic(object):
 
         self.load()
         return True
-
-
-
-
-
 
