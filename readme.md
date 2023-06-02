@@ -1,6 +1,6 @@
 
 # About
-A mmap Dict.
+A dict by mmap.
 
 - ## quick load and less mem
 Load data quickly in less mem cache(2GB size matrix load in 0.5s~1.2s, 400MB mem only.)
