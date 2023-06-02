@@ -48,9 +48,10 @@ class JmmDic(object):
         Returns:
             bool: [action result]
         '''
+        values = [json.dumps(v) for v in values]
         maxlen = max([len(v) for v in values])
         maxlen = int(maxlen *1.5)
-        if not keys: raise ValueError('empty keys')
+        if not keys: raise ValueError('Empty keys')
         if len(keys) != len(set(keys)): raise ValueError('Please make all keys unique first.')
 
         self.fp = os.path.join(path, name) if path else name
@@ -78,7 +79,7 @@ class JmmDic(object):
         Returns:
             dict: [keys_oov, keys_in, all keys' value]
         '''
-        if not keys: raise ValueError('empty keys')
+        if not keys: raise ValueError('Empty keys')
         if not isinstance(keys, list): keys = [keys]
         _keys = np.array(keys)
 
@@ -91,8 +92,9 @@ class JmmDic(object):
         _new_idx = {}
 
         if is_get_vals:
-            _lambda = lambda x: ''.join([chr(_x) for _x in list(filter(lambda x: x not in [-1, 0, 10, 32], x))])
+            _lambda = lambda x: ''.join([chr(_x) for _x in list(filter(lambda x: x not in [-1, 0, 10, 32], x))]).encode('utf-8').decode('unicode_escape')
             _values = [_lambda(_x) for _x in self.values[_idxs_values]]
+            _values = [json.loads(_v) if _v else None for _v in _values]
 
             _new_idx = {**dict(zip(_oov, [None]*len(_oov)), **dict(zip(_keys_in, _values)))}
 
@@ -112,6 +114,7 @@ class JmmDic(object):
         if not keys: raise ValueError('Empty keys.')
         if not values: raise ValueError('Empty values.')
 
+        values = [json.dumps(v) for v in values]
         _len_k, _len_v = len(keys), len(values)
         if _len_k != _len_v: raise ValueError(f'Same length of keys and values expected, got {_len_k} keys and {_len_v} values.')
         if _len_k != len(set(keys)): raise ValueError('Please make all keys unique first.')

@@ -25,7 +25,7 @@ class JDic(object):
         if not keys: return False
         fp = os.path.join(path, name) if path else name
         self.keys = {k:i for i, k in tqdm(enumerate(keys))}
-        self.values = np.array([_x.encode('utf-8') for _x in tqdm(values)])
+        self.values = np.array([json.dumps(_x).encode('utf-8') for _x in tqdm(values)])
         np.save(f'{fp}_keys.dat', self.keys)
         np.save(f'{fp}_values.dat', self.values)
         os.rename(f'{fp}_keys.dat.npy', f'{fp}_keys.dat')
